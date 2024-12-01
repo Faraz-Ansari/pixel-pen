@@ -28,6 +28,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/user", userRoutes);
 app.use("/api/auth", authRoutes);
 
+// Middleware to handle errors
+app.use((err, req, res, next) => {
+    const statusCode = err.status || 500;
+    const message = err.message || "Internal Server Error";
+    res.status(statusCode).json({ success: false, statusCode, message });
+});
+
 // Server
 app.listen(port, () => {
     console.log(`Server is running on port http://localhost:${port}`);
