@@ -56,7 +56,7 @@ export default function SignUp() {
                     </Link>
 
                     <p className="mt-5">
-                        The best blog app is here! Sign in to get started.
+                        The best blog app is here! Sign up to get started.
                     </p>
                 </div>
                 {/* right side */}
