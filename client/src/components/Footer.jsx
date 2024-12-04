@@ -12,8 +12,8 @@ export default function FooterComponent() {
                             to="/"
                             className="self-center text-xl md:text-2xl whitespace-nowrap font-semibold dark:text-white"
                         >
-                            <span className="text-blue-600">Pixel</span>
-                            <span className="text-slate-800">Pen</span>
+                            <span className="text-blue-600 dark:text-blue-500">Pixel</span>
+                            <span className="text-slate-800 dark:text-white">Pen</span>
                         </Link>
                     </div>
 

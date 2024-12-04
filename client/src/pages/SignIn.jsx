@@ -57,7 +57,7 @@ export default function SignIn() {
                 <div className="flex-1">
                     <Link to="/" className="text-5xl font-bold dark:text-white">
                         <span className="text-blue-600">Pixel</span>
-                        <span className="text-slate-800">Pen</span>
+                        <span className="text-slate-800 dark:text-white">Pen</span>
                     </Link>
 
                     <p className="mt-5">

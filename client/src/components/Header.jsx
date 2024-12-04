@@ -8,13 +8,17 @@ import {
     DropdownDivider,
 } from "flowbite-react";
 import { AiOutlineSearch } from "react-icons/ai";
-import { FaMoon } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { FaMoon, FaSun } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
+import { toggleTheme } from "../redux/theme/themeSlice";
 
 export default function Header() {
     const path = useLocation().pathname;
 
     const { currentUser } = useSelector((state) => state.user);
+
+    const dispatch = useDispatch();
+    const { theme } = useSelector((state) => state.theme);
 
     return (
         <Navbar className="border-b-2">
@@ -22,8 +26,8 @@ export default function Header() {
                 to="/"
                 className="self-center p-2 text-xl md:text-2xl whitespace-nowrap font-semibold dark:text-white"
             >
-                <span className="text-blue-600">Pixel</span>
-                <span className="text-slate-800">Pen</span>
+                <span className="text-blue-600 dark:text-blue-500">Pixel</span>
+                <span className="text-slate-800 dark:text-white">Pen</span>
             </Link>
 
             <form>
@@ -40,8 +44,13 @@ export default function Header() {
             </Button>
 
             <div className="flex justify-center items-center gap-4 md:order-2">
-                <Button className="hidden md:inline" color="gray" pill>
-                    <FaMoon />
+                <Button
+                    className="hidden md:inline"
+                    color="gray"
+                    pill
+                    onClick={() => dispatch(toggleTheme())}
+                >
+                    {theme === "light" ? <FaMoon /> : <FaSun />}
                 </Button>
                 {currentUser ? (
                     <Dropdown
