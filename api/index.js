@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
 import userRoutes from "./routes/user.route.js";
 import authRoutes from "./routes/auth.route.js";
@@ -23,6 +24,7 @@ mongoose
 // Middleware to parse incoming requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Routes
 app.use("/api/user", userRoutes);
@@ -30,7 +32,7 @@ app.use("/api/auth", authRoutes);
 
 // Middleware to handle errors
 app.use((err, req, res, next) => {
-    const statusCode = err.status || 500;
+    const statusCode = err.statusCode || 500;
     const message = err.message || "Internal Server Error";
     res.status(statusCode).json({ success: false, statusCode, message });
 });
