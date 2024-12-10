@@ -11,6 +11,11 @@ import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { toggleTheme } from "../redux/theme/themeSlice";
+import {
+    signOutStart,
+    signOutSuccess,
+    signOutFailure,
+} from "../redux/user/userSlice";
 
 export default function Header() {
     const path = useLocation().pathname;
@@ -19,6 +24,23 @@ export default function Header() {
 
     const dispatch = useDispatch();
     const { theme } = useSelector((state) => state.theme);
+
+    const handleSignOut = async () => {
+        try {
+            dispatch(signOutStart());
+            const response = await fetch("/api/user/sign-out");
+            const data = await response.json();
+
+            if (data.success === false) {
+                dispatch(signOutFailure(data.message));
+                return;
+            }
+
+            dispatch(signOutSuccess());
+        } catch (error) {
+            dispatch(signOutFailure(error.message));
+        }
+    };
 
     return (
         <Navbar className="border-b-2">
@@ -76,7 +98,9 @@ export default function Header() {
                             <Dropdown.Item>Profile</Dropdown.Item>
                         </Link>
                         <DropdownDivider />
-                        <Dropdown.Item>Sign out</Dropdown.Item>
+                        <Dropdown.Item onClick={() => handleSignOut()}>
+                            Sign out
+                        </Dropdown.Item>
                     </Dropdown>
                 ) : (
                     <Link to="/sign-in">

@@ -20,6 +20,9 @@ import {
     deleteUserStart,
     deleteUserSuccess,
     deleteUserFailure,
+    signOutStart,
+    signOutSuccess,
+    signOutFailure,
 } from "../redux/user/userSlice";
 
 export default function DashProfile() {
@@ -88,12 +91,15 @@ export default function DashProfile() {
         setShowModal(false);
         try {
             dispatch(deleteUserStart());
-            const response = await fetch(`/api/user/delete/${currentUser._id}`, {
-                method: "DELETE",
-            });
-            
+            const response = await fetch(
+                `/api/user/delete/${currentUser._id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
             const data = await response.json();
-            if(data.success === false) {
+            if (data.success === false) {
                 return dispatch(deleteUserFailure(data.message));
             }
             dispatch(deleteUserSuccess());
@@ -117,6 +123,23 @@ export default function DashProfile() {
 
             setImageFile(e.target.files[0]);
             setImageFileURL(URL.createObjectURL(e.target.files[0]));
+        }
+    };
+
+    const handleSignOut = async () => {
+        try {
+            dispatch(signOutStart());
+            const response = await fetch("/api/user/sign-out");
+            const data = await response.json();
+
+            if (data.success === false) {
+                dispatch(signOutFailure(data.message));
+                return;
+            }
+
+            dispatch(signOutSuccess());
+        } catch (error) {
+            dispatch(signOutFailure(error.message));
         }
     };
 
@@ -252,7 +275,10 @@ export default function DashProfile() {
                 >
                     Delete account
                 </span>
-                <span className="text-green-700 dark:text-green-500 hover:font-semibold cursor-pointer">
+                <span
+                    onClick={() => handleSignOut()}
+                    className="text-green-700 dark:text-green-500 hover:font-semibold cursor-pointer"
+                >
                     Sign out
                 </span>
             </div>
