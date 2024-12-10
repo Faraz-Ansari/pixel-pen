@@ -53,9 +53,13 @@ export const signIn = async (req, res, next) => {
             return next(errorHandler("Invalid password", 400));
         }
 
-        const token = jwt.sign({ id: validUser._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
+        const token = jwt.sign(
+            { id: validUser._id, idAdmin: validUser.isAdmin },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h",
+            }
+        );
 
         const { password: userPassword, ...user } = validUser._doc;
 
@@ -74,9 +78,13 @@ export const google = async (req, res, next) => {
         const user = await User.findOne({ email });
 
         if (user) {
-            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-                expiresIn: "1h",
-            });
+            const token = jwt.sign(
+                { id: user._id, isAdmin: user.isAdmin },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "1h",
+                }
+            );
             const { password, ...restOfUser } = user._doc;
 
             res.status(200)
@@ -98,7 +106,7 @@ export const google = async (req, res, next) => {
             });
 
             const token = jwt.sign(
-                { id: newUser._id },
+                { id: newUser._id, isAdmin: newUser.isAdmin },
                 process.env.JWT_SECRET,
                 { expiresIn: "1h" }
             );
