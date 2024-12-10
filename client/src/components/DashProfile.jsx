@@ -1,6 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
-import { TextInput, Button, Alert } from "flowbite-react";
+import { TextInput, Button, Alert, Modal } from "flowbite-react";
+import { CircularProgressbar } from "react-circular-progressbar";
+import "react-circular-progressbar/dist/styles.css";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 import {
     getDownloadURL,
@@ -10,17 +13,17 @@ import {
 } from "firebase/storage";
 import { app } from "../firebase";
 
-import { CircularProgressbar } from "react-circular-progressbar";
-import "react-circular-progressbar/dist/styles.css";
-
 import {
     updateStart,
     updateSuccess,
     updateFailure,
+    deleteUserStart,
+    deleteUserSuccess,
+    deleteUserFailure,
 } from "../redux/user/userSlice";
 
 export default function DashProfile() {
-    const { currentUser } = useSelector((state) => state.user);
+    const { currentUser, error } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const imageInputRef = useRef();
@@ -28,6 +31,8 @@ export default function DashProfile() {
     const [formData, setFormData] = useState({});
     const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
     const [updateUserError, setUpdateUserError] = useState(null);
+
+    const [showModal, setShowModal] = useState(false);
 
     const [imageFile, setImageFile] = useState(null);
     const [imageFileURL, setImageFileURL] = useState(null);
@@ -76,6 +81,24 @@ export default function DashProfile() {
         } catch (error) {
             dispatch(updateFailure(error.message));
             setUpdateUserError(error.message);
+        }
+    };
+
+    const handleDelete = async () => {
+        setShowModal(false);
+        try {
+            dispatch(deleteUserStart());
+            const response = await fetch(`/api/user/delete/${currentUser._id}`, {
+                method: "DELETE",
+            });
+            
+            const data = await response.json();
+            if(data.success === false) {
+                return dispatch(deleteUserFailure(data.message));
+            }
+            dispatch(deleteUserSuccess());
+        } catch (error) {
+            dispatch(deleteUserFailure(error.message));
         }
     };
 
@@ -223,7 +246,10 @@ export default function DashProfile() {
                 </Button>
             </form>
             <div className="flex justify-between mt-4">
-                <span className="text-red-500 hover:font-semibold cursor-pointer">
+                <span
+                    onClick={() => setShowModal(true)}
+                    className="text-red-500 hover:font-semibold cursor-pointer"
+                >
                     Delete account
                 </span>
                 <span className="text-green-700 dark:text-green-500 hover:font-semibold cursor-pointer">
@@ -242,6 +268,42 @@ export default function DashProfile() {
                     {updateUserError}
                 </Alert>
             )}
+
+            {error && (
+                <Alert color="failure" className="mt-5">
+                    {error}
+                </Alert>
+            )}
+
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                popup
+                size="md"
+            >
+                <Modal.Header />
+                <Modal.Body>
+                    <div className="text-center">
+                        <HiOutlineExclamationCircle className="h-14 w-14 mb-4 mx-auto text-red-500 text-5xl" />
+                        <h3 className="mb-5 text-lg text-red-600">
+                            Are you sure you want to delete this account
+                        </h3>
+                        <div className="flex justify-between">
+                            <Button color="failure" onClick={handleDelete}>
+                                Yes, I'm sure
+                            </Button>
+
+                            <Button
+                                onClick={() => setShowModal(false)}
+                                outline
+                                gradientDuoTone="purpleToBlue"
+                            >
+                                No, take me back
+                            </Button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
