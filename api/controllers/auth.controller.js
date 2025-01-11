@@ -5,7 +5,8 @@ import { errorHandler } from "../utils/error.js";
 
 export const signUp = async (req, res, next) => {
     try {
-        const { username, email, password } = req.body;
+        let { username, email } = req.body;
+        const { password } = req.body;
 
         if (
             !username ||
@@ -19,6 +20,9 @@ export const signUp = async (req, res, next) => {
             return next(errorHandler("All fields are required", 400));
         }
 
+        username = username.toLowerCase();
+        email = email.toLowerCase();
+
         const hashedPassword = bcryptjs.hashSync(password, 10);
 
         await User.create({ username, email, password: hashedPassword });
@@ -31,11 +35,14 @@ export const signUp = async (req, res, next) => {
 };
 
 export const signIn = async (req, res, next) => {
-    const { username, password } = req.body;
+    let { username } = req.body;
+    const { password } = req.body;
 
     if (!username || !password || username === "" || password === "") {
         next(errorHandler("All fields are required"));
     }
+
+    username = username.toLowerCase();
 
     try {
         const validUser = await User.findOne({ username });

@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import { TextInput, Button, Alert, Modal } from "flowbite-react";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -26,7 +27,7 @@ import {
 } from "../redux/user/userSlice";
 
 export default function DashProfile() {
-    const { currentUser, error } = useSelector((state) => state.user);
+    const { currentUser, error, loading } = useSelector((state) => state.user);
     const dispatch = useDispatch();
 
     const imageInputRef = useRef();
@@ -261,12 +262,25 @@ export default function DashProfile() {
 
                 <Button
                     type="submit"
-                    disabled={imageFileUploading}
-                    outline
+                    disabled={loading || imageFileUploading}
                     gradientDuoTone="purpleToPink"
+                    outline
                 >
-                    Update
+                    {loading ? "Loading..." : "Update"}
                 </Button>
+
+                {currentUser.isAdmin && (
+                    <Link to="/create-post">
+                        <Button
+                            type="button"
+                            gradientDuoTone="purpleToBlue"
+                            className="w-full"
+                            outline
+                        >
+                            Create a post
+                        </Button>
+                    </Link>
+                )}
             </form>
             <div className="flex justify-between mt-4">
                 <span
