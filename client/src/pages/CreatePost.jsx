@@ -9,12 +9,16 @@ import {
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
+import { useNavigate } from "react-router-dom";
 
 export default function CreatePost() {
     const [file, setFile] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
+    const [publishError, setPublishError] = useState(null);
+
+    const navigate = useNavigate();
 
     const handleUploadImage = async () => {
         try {
@@ -37,7 +41,9 @@ export default function CreatePost() {
                     setImageUploadProgress(progress.toFixed(0));
                 },
                 (error) => {
-                    setImageUploadError("Something went wrong...");
+                    setImageUploadError(
+                        "Something went wrong during upload..."
+                    );
                     setImageUploadProgress(null);
                 },
                 () => {
@@ -56,9 +62,29 @@ export default function CreatePost() {
         }
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        setFormData({ ...formData });
+
+        try {
+            const response = await fetch("/api/post/create-post", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await response.json();
+            if (data.success === false) {
+                setPublishError(data.message);
+                return;
+            } else {
+                setPublishError(null);
+
+                navigate(`/post/${data.slug}`);
+            }
+        } catch (error) {
+            setPublishError("Something went wrong during publishing...");
+        }
     };
 
     return (
@@ -74,12 +100,22 @@ export default function CreatePost() {
                         id="title"
                         className="flex-1"
                         required
+                        onChange={(e) =>
+                            setFormData({ ...formData, title: e.target.value })
+                        }
                     />
-                    <Select>
-                        <option value="uncategorized">Select a category</option>
-                        <option value="javascript">Java Script</option>
-                        <option value="reactjs">React.js</option>
-                        <option value="nextjs">Next.js</option>
+                    <Select
+                        onChange={(e) =>
+                            setFormData({
+                                ...formData,
+                                category: e.target.value,
+                            })
+                        }
+                    >
+                        <option value="Uncategorized">Select a category</option>
+                        <option value="Javascript">Java Script</option>
+                        <option value="React js">React.js</option>
+                        <option value="Next js">Next.js</option>
                     </Select>
                 </div>
 
@@ -123,10 +159,18 @@ export default function CreatePost() {
                     placeholder="Enter something..."
                     sizing="lg"
                     required
+                    onChange={(e) =>
+                        setFormData({ ...formData, content: e.target.value })
+                    }
                 />
                 <Button type="submit" outline gradientDuoTone="purpleToBlue">
                     Publish
                 </Button>
+                {publishError && (
+                    <Alert color="failure" className="mt-5">
+                        {publishError}
+                    </Alert>
+                )}
             </form>
         </div>
     );
