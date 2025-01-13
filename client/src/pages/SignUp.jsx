@@ -53,7 +53,9 @@ export default function SignUp() {
                 <div className="flex-1">
                     <Link to="/" className="text-5xl font-bold dark:text-white">
                         <span className="text-blue-600">Pixel</span>
-                        <span className="text-slate-800 dark:text-white">Pen</span>
+                        <span className="text-slate-800 dark:text-white">
+                            Pen
+                        </span>
                     </Link>
 
                     <p className="mt-5">
@@ -104,10 +106,10 @@ export default function SignUp() {
                             disabled={loading}
                         >
                             {loading ? (
-                                <>
-                                    <Spinner size="sm" />
+                                <div className="flex items-center gap-2">
+                                    <Spinner size="md" />
                                     <span className="p-3">Loading...</span>
-                                </>
+                                </div>
                             ) : (
                                 "Sign Up"
                             )}

@@ -98,10 +98,10 @@ export default function SignIn() {
                             disabled={loading}
                         >
                             {loading ? (
-                                <>
-                                    <Spinner size="sm" />
+                                <div className="flex items-center gap-2">
+                                    <Spinner size="md" />
                                     <span className="p-3">Loading...</span>
-                                </>
+                                </div>
                             ) : (
                                 "Sign In"
                             )}
