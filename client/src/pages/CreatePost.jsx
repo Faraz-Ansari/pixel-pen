@@ -15,7 +15,10 @@ export default function CreatePost() {
     const [file, setFile] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
-    const [formData, setFormData] = useState({});
+    const [formData, setFormData] = useState({
+        title: "", // Default to an empty string
+        content: "", // Default to an empty string
+    });
     const [publishError, setPublishError] = useState(null);
 
     const navigate = useNavigate();
@@ -51,7 +54,10 @@ export default function CreatePost() {
                         (downloadURL) => {
                             setImageUploadError(null);
                             setImageUploadProgress(null);
-                            setFormData({ ...formData, image: downloadURL });
+                            setFormData((prev) => ({
+                                ...prev,
+                                image: downloadURL,
+                            }));
                         }
                     );
                 }
@@ -64,6 +70,7 @@ export default function CreatePost() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log(formData);
 
         try {
             const response = await fetch("/api/post/create-post", {
@@ -100,8 +107,12 @@ export default function CreatePost() {
                         id="title"
                         className="flex-1"
                         required
+                        value={formData.title}
                         onChange={(e) =>
-                            setFormData({ ...formData, title: e.target.value })
+                            setFormData((prev) => ({
+                                ...prev,
+                                title: e.target.value,
+                            }))
                         }
                     />
                     <Select
@@ -159,11 +170,20 @@ export default function CreatePost() {
                     placeholder="Enter something..."
                     sizing="lg"
                     required
+                    value={formData.content}
                     onChange={(e) =>
-                        setFormData({ ...formData, content: e.target.value })
+                        setFormData((prev) => ({
+                            ...prev,
+                            content: e.target.value,
+                        }))
                     }
                 />
-                <Button type="submit" outline gradientDuoTone="purpleToBlue">
+                <Button
+                    type="submit"
+                    outline
+                    gradientDuoTone="purpleToBlue"
+                    disabled={imageUploadProgress}
+                >
                     Publish
                 </Button>
                 {publishError && (
