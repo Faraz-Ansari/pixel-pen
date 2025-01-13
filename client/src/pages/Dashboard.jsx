@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import DashProfile from "../components/DashProfile";
 import DashSidebar from "../components/DashSidebar";
+import DashPosts from "../components/DashPosts";
 
 export default function DashBoard() {
     const location = useLocation();
@@ -26,6 +27,9 @@ export default function DashBoard() {
 
             {/* Profile */}
             {tab === "profile" && <DashProfile />}
+
+            {/* Posts */}
+            {tab === "posts" && <DashPosts />}
         </div>
     );
 }
