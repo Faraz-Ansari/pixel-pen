@@ -85,3 +85,46 @@ export const signOut = (req, res, next) => {
         next(error);
     }
 };
+
+export const getUsers = async (req, res, next) => {
+    if (!req.user.isAdmin) {
+        return next(
+            errorHandler("You are not authorized to see all users", 403)
+        );
+    }
+    try {
+        const startIndex = req.query.startIndex || 0;
+        const limit = req.query.limit || 9;
+        const sortDirection = req.query.sort === "asc" ? 1 : -1;
+
+        const users = await User.find()
+            .sort({ updatedAt: sortDirection })
+            .skip(startIndex)
+            .limit(limit);
+
+        const restOfUsers = users.map((user) => {
+            const { password, ...restOfUser } = user._doc;
+            return restOfUser;
+        });
+
+        const totalUsers = await User.countDocuments();
+
+        const oneMonthAgo = new Date(
+            new Date().getFullYear(),
+            new Date().getMonth() - 1,
+            new Date().getDate()
+        );
+
+        const lastMonthUsers = await User.find({
+            createdAt: { $gte: oneMonthAgo },
+        });
+
+        res.status(200).json({
+            users: restOfUsers,
+            totalUsers,
+            lastMonthUsers,
+        });
+    } catch (error) {
+        next(error);
+    }
+};
