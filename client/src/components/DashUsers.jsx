@@ -55,7 +55,25 @@ export default function DashUsers() {
         }
     }, [currentUser._id]);
 
-    const handleDeleteUser = async () => {};
+    const handleDeleteUser = async () => {
+        try {
+            const response = await fetch(`/api/user/delete/${userIdToDelete}`, {
+                method: "DELETE",
+            });
+            const data = await response.json();
+            if (data.success === false) {
+                console.error(data.message);
+                return;
+            } else {
+                setUsers((prev) =>
+                    prev.filter((user) => user._id !== userIdToDelete)
+                );
+                setShowModal(false);
+            }
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
 
     return (
         <div className="table-auto overflow-x-scroll md:mx-auto p-3">
@@ -96,9 +114,9 @@ export default function DashUsers() {
 
                                     <Table.Cell>
                                         {user.isAdmin ? (
-                                            <FaCheck className="text-green-500"/>
+                                            <FaCheck className="text-green-500" />
                                         ) : (
-                                            <FaTimes className="text-red-500"/>
+                                            <FaTimes className="text-red-500" />
                                         )}
                                     </Table.Cell>
 

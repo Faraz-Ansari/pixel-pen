@@ -61,7 +61,9 @@ export const updateUser = async (req, res, next) => {
 };
 
 export const deleteUser = async (req, res, next) => {
-    if (req.user.id !== req.params.id) {
+    // Check if the user is an admin or the user is deleting their own account
+    // Admins can delete any user's account
+    if (!req.user.isAdmin && req.user.id !== req.params.id) {
         return next(
             errorHandler("You are not authorized to perform this action", 403)
         );
