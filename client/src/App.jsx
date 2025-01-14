@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Projects from "./pages/Projects";
 import About from "./pages/About";
 import CreatePost from "./pages/CreatePost";
+import UpdatePost from "./pages/UpdatePost";
 import NotFound from "./pages/NotFound";
 
 import Header from "./components/Header";
@@ -32,6 +33,7 @@ export default function App() {
 
                 <Route element={<OnlyAdminPrivateRoute />}>
                     <Route path="/create-post" element={<CreatePost />} />
+                    <Route path="/update-post/:postId" element={<UpdatePost />} />
                 </Route>
             </Routes>
             <Footer />
