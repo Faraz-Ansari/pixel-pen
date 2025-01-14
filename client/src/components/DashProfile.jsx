@@ -88,7 +88,7 @@ export default function DashProfile() {
         }
     };
 
-    const handleDelete = async () => {
+    const handleDeleteUser = async () => {
         setShowModal(false);
         try {
             dispatch(deleteUserStart());
@@ -329,7 +329,7 @@ export default function DashProfile() {
                             Are you sure you want to delete this account
                         </h3>
                         <div className="flex justify-between">
-                            <Button color="failure" onClick={handleDelete}>
+                            <Button color="failure" onClick={handleDeleteUser}>
                                 Yes, I'm sure
                             </Button>
 

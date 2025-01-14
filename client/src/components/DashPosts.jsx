@@ -1,12 +1,39 @@
-import { Table } from "flowbite-react";
+import { Modal, Table, Button } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { HiOutlineExclamationCircle } from "react-icons/hi";
 
 export default function DashPosts() {
     const { currentUser } = useSelector((state) => state.user);
     const [userPosts, setUserPosts] = useState([]);
     const [showMore, setShowMore] = useState(true);
+    const [showModal, setShowModal] = useState(false);
+    const [postIdToDelete, setPostIdToDelete] = useState(null);
+
+    const handleDeletePost = async () => {
+        setShowModal(false);
+
+        try {
+            const response = await fetch(
+                `/api/post/delete-post/${postIdToDelete}/${currentUser._id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            const data = await response.json();
+            if (data.success === false) {
+                return;
+            }
+
+            setUserPosts((prev) => [
+                ...prev.filter((post) => post._id !== postIdToDelete),
+            ]);
+        } catch (error) {
+            console.error(error.message);
+        }
+    };
 
     const handleClick = async () => {
         const startIndex = userPosts.length;
@@ -23,11 +50,11 @@ export default function DashPosts() {
             }
 
             setUserPosts((prev) => [...prev, ...data.posts]);
-            if(data.posts.length < 9) {
+            if (data.posts.length < 9) {
                 setShowMore(false);
             }
         } catch (error) {
-            console.log(error.message);
+            console.error(error.message);
         }
     };
 
@@ -45,7 +72,7 @@ export default function DashPosts() {
                     }
                 }
             } catch (error) {
-                console.log(error.message);
+                console.error(error.message);
             }
         };
 
@@ -102,7 +129,13 @@ export default function DashPosts() {
                                     </Table.Cell>
 
                                     <Table.Cell>
-                                        <span className="text-red-600 hover:underline cursor-pointer">
+                                        <span
+                                            onClick={() => {
+                                                setShowModal(true);
+                                                setPostIdToDelete(post._id);
+                                            }}
+                                            className="text-red-600 hover:underline cursor-pointer"
+                                        >
                                             Delete
                                         </span>
                                     </Table.Cell>
@@ -130,6 +163,35 @@ export default function DashPosts() {
             ) : (
                 <h1>You have no posts yet!</h1>
             )}
+            <Modal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                popup
+                size="md"
+            >
+                <Modal.Header />
+                <Modal.Body>
+                    <div className="text-center">
+                        <HiOutlineExclamationCircle className="h-14 w-14 mb-4 mx-auto text-red-500 text-5xl" />
+                        <h3 className="mb-5 text-lg text-red-600">
+                            Are you sure you want to delete this post
+                        </h3>
+                        <div className="flex justify-between">
+                            <Button color="failure" onClick={handleDeletePost}>
+                                Yes, I'm sure
+                            </Button>
+
+                            <Button
+                                onClick={() => setShowModal(false)}
+                                outline
+                                gradientDuoTone="purpleToBlue"
+                            >
+                                No, take me back
+                            </Button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
         </div>
     );
 }
