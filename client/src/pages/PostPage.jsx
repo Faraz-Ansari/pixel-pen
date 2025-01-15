@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button, Spinner } from "flowbite-react";
+import CallToAction from "../components/CallToAction";
 
 export default function PostPage() {
     const { postSlug } = useParams();
@@ -37,7 +38,7 @@ export default function PostPage() {
     }, [postSlug]);
 
     return (
-        <div className="p-3 max-w-6xl mx-auto flex flex-col items-center gap-4 min-h-screen">
+        <div className="p-3 max-w-6xl mx-auto flex flex-col items-center gap-4 min-h-screen ">
             {/* Loading spinner */}
             <div
                 className={`flex items-center justify-center ${
@@ -49,7 +50,7 @@ export default function PostPage() {
 
             {post && (
                 <>
-                    <h1 className="font-semibold font-serif text-3xl md:text-4xl mt-10 text-center max-w-2xl mx-auto">
+                    <h1 className="font-serif font-semibold text-3xl md:text-4xl mt-10 ">
                         {post.title}
                     </h1>
                     <Link to={`/search?category=${post.category}`}>
@@ -79,8 +80,12 @@ export default function PostPage() {
                     <div
                         dangerouslySetInnerHTML={{ __html: post.content }}
                         // post-content is a custom class inside index.css that we will use to style the content
-                        className="post-content "
+                        className="post-content text-md"
                     ></div>
+
+                    <div className="w-full mx-auto">
+                        <CallToAction />
+                    </div>
                 </>
             )}
         </div>
