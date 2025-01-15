@@ -14,6 +14,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
+import PostPage from "./pages/PostPage";
 
 export default function App() {
     return (
@@ -25,6 +26,7 @@ export default function App() {
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Projects />} />
+                <Route path="/post/:postSlug" element={<PostPage />} />
                 <Route path="*" element={<NotFound />} />
 
                 <Route element={<PrivateRoute />}>
@@ -33,7 +35,10 @@ export default function App() {
 
                 <Route element={<OnlyAdminPrivateRoute />}>
                     <Route path="/create-post" element={<CreatePost />} />
-                    <Route path="/update-post/:postId" element={<UpdatePost />} />
+                    <Route
+                        path="/update-post/:postId"
+                        element={<UpdatePost />}
+                    />
                 </Route>
             </Routes>
             <Footer />
