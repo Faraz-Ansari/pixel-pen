@@ -24,6 +24,7 @@ export default function DashPosts() {
 
             const data = await response.json();
             if (data.success === false) {
+                console.error(data.message);
                 return;
             }
 

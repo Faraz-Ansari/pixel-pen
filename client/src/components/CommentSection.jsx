@@ -1,16 +1,40 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { Alert, Button, Textarea } from "flowbite-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import Comment from "./Comment";
 
 export default function CommentSection({ postId }) {
     const { currentUser } = useSelector((state) => state.user);
-    const [comment, setComment] = useState("");
+    const [commentContent, setCommentContent] = useState("");
     const [commentError, setCommentError] = useState(null);
+    const [postComments, setPostComments] = useState([]);
+
+    useEffect(() => {
+        const fetchComments = async () => {
+            try {
+                const response = await fetch(
+                    `/api/comment/get-post-comments/${postId}`
+                );
+                const data = await response.json();
+
+                if (data.success === false) {
+                    console.error(data.message);
+                    return;
+                }
+
+                setPostComments(data);
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+
+        fetchComments();
+    }, [postId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (comment.length > 200) {
+        if (commentContent.length > 200) {
             setCommentError("Comment must be less than 200 characters");
             return;
         }
@@ -24,7 +48,7 @@ export default function CommentSection({ postId }) {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    content: comment,
+                    content: commentContent,
                     postId,
                     userId: currentUser._id,
                 }),
@@ -37,7 +61,8 @@ export default function CommentSection({ postId }) {
                 return;
             }
             setCommentError(null);
-            setComment("");
+            setCommentContent("");
+            setPostComments([data, ...postComments]);
         } catch (error) {
             setCommentError(error.message);
         }
@@ -81,12 +106,14 @@ export default function CommentSection({ postId }) {
                         placeholder="Add a comment..."
                         rows="3"
                         maxLength="200"
-                        onChange={(e) => setComment(e.target.value)}
-                        value={comment}
+                        onChange={(e) => setCommentContent(e.target.value)}
+                        value={commentContent}
                     />
                     <div className="flex text-gray-400 justify-between items-center">
                         {/* 200 is the maximum character limit for the comment */}
-                        <p>{200 - comment.length} characters remaining</p>
+                        <p>
+                            {200 - commentContent.length} characters remaining
+                        </p>
                         <Button
                             gradientDuoTone="cyanToBlue"
                             type="submit"
@@ -101,6 +128,22 @@ export default function CommentSection({ postId }) {
                         </Alert>
                     )}
                 </form>
+            )}
+
+            {postComments.length > 0 ? (
+                <>
+                    <div className="flex items-center gap-1">
+                        <p>Comments</p>
+                        <div className="border py-1 px-2">
+                            <p>{postComments.length}</p>
+                        </div>
+                    </div>
+                    {postComments.map((postComment) => (
+                        <Comment key={postComment._id} comment={postComment} />
+                    ))}
+                </>
+            ) : (
+                <p>No comments yet!</p>
             )}
         </div>
     );
