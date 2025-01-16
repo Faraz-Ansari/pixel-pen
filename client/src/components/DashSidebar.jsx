@@ -1,5 +1,11 @@
 import { Sidebar } from "flowbite-react";
-import { HiArrowSmRight, HiDocumentText, HiOutlineUserGroup, HiUser } from "react-icons/hi";
+import {
+    HiAnnotation,
+    HiArrowSmRight,
+    HiDocumentText,
+    HiOutlineUserGroup,
+    HiUser,
+} from "react-icons/hi";
 import { useLocation, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import {
@@ -59,27 +65,37 @@ export default function DashSidebar() {
                         </Sidebar.Item>
                     </Link>
                     {currentUser.isAdmin && (
-                        <Link to="/dashboard?tab=posts">
-                            <Sidebar.Item
-                                active={tab === "posts"}
-                                icon={HiDocumentText}
-                                as="div"
-                            >
-                                Post
-                            </Sidebar.Item>
-                        </Link>
-                    )}
+                        <>
+                            <Link to="/dashboard?tab=posts">
+                                <Sidebar.Item
+                                    active={tab === "posts"}
+                                    icon={HiDocumentText}
+                                    as="div"
+                                >
+                                    Post
+                                </Sidebar.Item>
+                            </Link>
 
-                    {currentUser.isAdmin && (
-                        <Link to="/dashboard?tab=users">
-                            <Sidebar.Item
-                                active={tab === "users"}
-                                icon={HiOutlineUserGroup}
-                                as="div"
-                            >
-                                User
-                            </Sidebar.Item>
-                        </Link>
+                            <Link to="/dashboard?tab=users">
+                                <Sidebar.Item
+                                    active={tab === "users"}
+                                    icon={HiOutlineUserGroup}
+                                    as="div"
+                                >
+                                    User
+                                </Sidebar.Item>
+                            </Link>
+
+                            <Link to="/dashboard?tab=comments">
+                                <Sidebar.Item
+                                    active={tab === "comments"}
+                                    icon={HiAnnotation}
+                                    as="div"
+                                >
+                                    Comment
+                                </Sidebar.Item>
+                            </Link>
+                        </>
                     )}
 
                     <Sidebar.Item
