@@ -106,6 +106,16 @@ export default function CommentSection({ postId }) {
         }
     };
 
+    const handleEdit = async (comment, editedComment) => {
+        setPostComments(
+            postComments.map((postComment) =>
+                postComment._id === comment._id
+                    ? { ...postComment, content: editedComment }
+                    : postComment
+            )
+        );
+    };
+
     return (
         <div className="flex flex-col gap-4">
             {currentUser ? (
@@ -181,6 +191,7 @@ export default function CommentSection({ postId }) {
                             key={postComment._id}
                             comment={postComment}
                             onLike={handleLike}
+                            onEdit={handleEdit}
                         />
                     ))}
                 </>
