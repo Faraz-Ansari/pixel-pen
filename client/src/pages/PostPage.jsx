@@ -3,12 +3,14 @@ import { useParams, Link } from "react-router-dom";
 import { Button, Spinner } from "flowbite-react";
 import CallToAction from "../components/CallToAction";
 import CommentSection from "../components/CommentSection";
+import PostCard from "../components/PostCard";
 
 export default function PostPage() {
     const { postSlug } = useParams();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [post, setPost] = useState(null);
+    const [recentPosts, setRecentPosts] = useState(null);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -37,6 +39,26 @@ export default function PostPage() {
 
         fetchPost();
     }, [postSlug]);
+
+    useEffect(() => {
+        const fetchRecentPosts = async () => {
+            try {
+                const response = await fetch(`/api/post/get-posts?limit=3`);
+                const data = await response.json();
+
+                if (data.success === false) {
+                    console.error(data.message);
+                    return;
+                }
+
+                setRecentPosts(data.posts);
+            } catch (error) {
+                console.error(error.message);
+            }
+        };
+
+        fetchRecentPosts();
+    }, []);
 
     return (
         <div className="p-3 max-w-6xl mx-auto flex flex-col items-center gap-4 min-h-screen ">
@@ -90,6 +112,18 @@ export default function PostPage() {
 
                     <div className="w-full ">
                         <CommentSection postId={post._id} />
+                    </div>
+
+                    <div className="flex flex-col items-center justify-center">
+                        <h1 className="text-xl font-semibold mb-5">
+                            Recent Articles
+                        </h1>
+                        <div className="flex flex-col md:flex-row gap-4">
+                            {recentPosts &&
+                                recentPosts.map((post) => (
+                                    <PostCard key={post._id} post={post} />
+                                ))}
+                        </div>
                     </div>
                 </>
             )}
