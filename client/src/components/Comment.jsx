@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
 
-export default function Comment({ comment, onLike, onEdit }) {
+export default function Comment({ comment, onLike, onEdit, onDelete }) {
     const [user, setUser] = useState({});
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.content);
@@ -136,12 +136,22 @@ export default function Comment({ comment, onLike, onEdit }) {
                             {currentUser &&
                                 (currentUser._id === comment.userId ||
                                     currentUser.isAdmin) && (
-                                    <button
-                                        className="hover:text-blue-500 transition-all"
-                                        onClick={handleEdit}
-                                    >
-                                        Edit
-                                    </button>
+                                    <>
+                                        <button
+                                            className="hover:text-blue-500 transition-all"
+                                            onClick={handleEdit}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="hover:text-red-500 transition-all"
+                                            onClick={() =>
+                                                onDelete(comment._id)
+                                            }
+                                        >
+                                            Delete
+                                        </button>
+                                    </>
                                 )}
                         </div>
                     </>
