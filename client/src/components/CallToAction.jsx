@@ -4,8 +4,12 @@ export default function CallToAction() {
     return (
         <div className="flex flex-col md:flex-row gap-4 items-center justify-center">
             <div className=" p-4  flex flex-col gap-2 font-semibold">
-                <h2 className="md:text-2xl">Want to learn more about TypeScript?</h2>
-                <p className="md:text-xl">Checkout these resources with 100 TypeScript projects</p>
+                <h2 className="text-lg md:text-2xl">
+                    Want to learn more about TypeScript?
+                </h2>
+                <p className="text-md md:text-lg">
+                    Checkout these resources with 100 TypeScript projects
+                </p>
                 <Button outline gradientDuoTone="purpleToBlue" className="mt-2">
                     <a
                         href="https://github.com/EvanLi/Github-Ranking/blob/master/Top100/TypeScript.md"
