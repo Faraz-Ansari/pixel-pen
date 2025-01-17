@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
     Navbar,
     TextInput,
@@ -16,14 +16,28 @@ import {
     signOutSuccess,
     signOutFailure,
 } from "../redux/user/userSlice";
+import { useEffect, useState } from "react";
 
 export default function Header() {
     const path = useLocation().pathname;
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const [searchTerm, setSearchTerm] = useState("");
 
     const { currentUser } = useSelector((state) => state.user);
 
     const dispatch = useDispatch();
     const { theme } = useSelector((state) => state.theme);
+
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const searchTermFromURL = urlParams.get("searchTerm");
+
+        if (searchTermFromURL) {
+            setSearchTerm(searchTermFromURL);
+        }
+    }, [location.search]);
 
     const handleSignOut = async () => {
         try {
@@ -42,6 +56,16 @@ export default function Header() {
         }
     };
 
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        const urlParams = new URLSearchParams(location.search);
+        urlParams.set("searchTerm", searchTerm);
+
+        const searchQuery = urlParams.toString();
+        navigate(`/search?${searchQuery}`);
+    };
+
     return (
         <Navbar className="border-b-2">
             <Link
@@ -52,11 +76,13 @@ export default function Header() {
                 <span className="text-slate-800 dark:text-white">Pen</span>
             </Link>
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <TextInput
                     type="text"
                     placeholder="Search..."
                     rightIcon={AiOutlineSearch}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                     className="hidden md:inline"
                 />
             </form>

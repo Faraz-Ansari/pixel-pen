@@ -10,6 +10,7 @@ import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 import NotFound from "./pages/NotFound";
 import PostPage from "./pages/PostPage";
+import Search from "./pages/Search";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -28,6 +29,7 @@ export default function App() {
                 <Route path="/sign-up" element={<SignUp />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Projects />} />
+                <Route path="/search" element={<Search />} />
                 <Route path="/post/:postSlug" element={<PostPage />} />
                 <Route path="*" element={<NotFound />} />
 
