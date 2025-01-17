@@ -6,6 +6,8 @@ import {
     ref,
     uploadBytesResumable,
 } from "firebase/storage";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { app } from "../firebase";
 import { CircularProgressbar } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
@@ -195,17 +197,15 @@ export default function UpdatePost() {
                         className="w-full h-72 object-cover rounded-lg"
                     />
                 )}
-                <TextInput
-                    placeholder="Enter something..."
-                    sizing="lg"
-                    required
+                <ReactQuill
+                    theme="snow"
                     value={formData.content}
-                    onChange={(e) =>
-                        setFormData((prev) => ({
-                            ...prev,
-                            content: e.target.value,
-                        }))
-                    }
+                    placeholder="Write something..."
+                    className="h-72 mb-12"
+                    required
+                    onChange={(value) => {
+                        setFormData({ ...formData, content: value });
+                    }}
                 />
                 <Button
                     type="submit"

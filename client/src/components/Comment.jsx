@@ -2,6 +2,7 @@ import { Button, Textarea } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { FaThumbsUp } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import moment from "moment";
 
 export default function Comment({ comment, onLike, onEdit, onDelete }) {
     const [user, setUser] = useState({});
@@ -76,11 +77,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
                     <span className="font-bold truncate">
                         {user ? `@${user.username}` : "Anonymous"}
                     </span>
-                    <span>
-                        {new Date(comment.createdAt).toLocaleDateString(
-                            "in-IN"
-                        )}
-                    </span>
+                    <span>{moment(comment.createdAt).fromNow()}</span>
                 </div>
 
                 {isEditing ? (

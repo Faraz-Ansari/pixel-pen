@@ -1,5 +1,7 @@
 import { Alert, Button, FileInput, Select, TextInput } from "flowbite-react";
 import { useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import {
     getDownloadURL,
     getStorage,
@@ -70,7 +72,7 @@ export default function CreatePost() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+
         try {
             const response = await fetch("/api/post/create-post", {
                 method: "POST",
@@ -165,18 +167,21 @@ export default function CreatePost() {
                         className="w-full h-72 object-cover rounded-lg"
                     />
                 )}
-                <TextInput
-                    placeholder="Enter something..."
-                    sizing="lg"
+
+                <ReactQuill
+                    theme="snow"
+                    placeholder="Write something..."
+                    className="h-72 mb-12"
                     required
                     value={formData.content}
-                    onChange={(e) =>
+                    onChange={(value) => {
                         setFormData((prev) => ({
                             ...prev,
-                            content: e.target.value,
-                        }))
-                    }
+                            content: value,
+                        }));
+                    }}
                 />
+
                 <Button
                     type="submit"
                     outline
