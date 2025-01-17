@@ -117,7 +117,7 @@ export const getUsers = async (req, res, next) => {
             new Date().getDate()
         );
 
-        const lastMonthUsers = await User.find({
+        const lastMonthUsers = await User.countDocuments({
             createdAt: { $gte: oneMonthAgo },
         });
 
@@ -134,7 +134,7 @@ export const getUsers = async (req, res, next) => {
 export const getCommentUsers = async (req, res, next) => {
     try {
         const user = await User.findById(req.params.userId);
-        if(!user) {
+        if (!user) {
             return next(errorHandler("User not found", 404));
         }
         const { password, ...restOfUser } = user._doc;
