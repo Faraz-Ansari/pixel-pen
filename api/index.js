@@ -49,7 +49,8 @@ app.use((err, req, res, next) => {
 app.use(express.static(path.join(__dirname, "/client/dist")));
 
 // Middleware to serve index.html file for all routes
-app.get("*", (req, res) => {
+// This is catch all route (express 5 recommends not using asterisk or explicit regex wildcard must be used)
+app.get((req, res) => {
     res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
 

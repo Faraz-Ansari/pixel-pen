@@ -4,7 +4,6 @@ import { Alert, Button, Modal, Textarea } from "flowbite-react";
 import { useState, useEffect } from "react";
 import Comment from "./Comment";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-import { set } from "mongoose";
 
 export default function CommentSection({ postId }) {
     const { currentUser } = useSelector((state) => state.user);
